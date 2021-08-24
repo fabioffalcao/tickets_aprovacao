@@ -34,7 +34,7 @@ class Ui_mainAprova(object):
         self.passNewmonitor.setEchoMode(QtWidgets.QLineEdit.Password)
         self.passNewmonitor.returnPressed.connect(self.onClickBtnExecutar)
         self.btnExecutar = QtWidgets.QPushButton(self.centralWidget)
-        self.btnExecutar.setGeometry(QtCore.QRect(230, 70, 75, 23))
+        self.btnExecutar.setGeometry(QtCore.QRect(230, 80, 75, 23))
         self.btnExecutar.setObjectName("btnExecutar")
         self.btnExecutar.clicked.connect(self.onClickBtnExecutar)
         self.lblNewmonitor = QtWidgets.QLabel(self.centralWidget)
@@ -47,6 +47,9 @@ class Ui_mainAprova(object):
         self.progressBar.setTextVisible(False)
         self.progressBar.setObjectName("progressBar")
         self.progressBar.setValue(0)
+        self.chkVisualizar = QtWidgets.QCheckBox(self.centralWidget)
+        self.chkVisualizar.setGeometry(QtCore.QRect(230, 50, 91, 23))
+        self.chkVisualizar.setObjectName("chkVisualizar")       
         mainAprova.setCentralWidget(self.centralWidget)
         self.mainToolBar = QtWidgets.QToolBar(mainAprova)
         self.mainToolBar.setObjectName("mainToolBar")
@@ -66,10 +69,16 @@ class Ui_mainAprova(object):
         self.btnExecutar.setText(_translate("mainAprova", "Executar"))
         self.lblNewmonitor.setText(_translate("mainAprova", "Digite as informações de\n"
 "conexão com o Newmonitor"))
+        self.chkVisualizar.setText(_translate("mainAprova", "Visualizar"))
 
     def onClickBtnExecutar(self):
         userNewmonitor = self.usrNewmonitor.text()
         passNewmonitor = self.passNewmonitor.text()
+
+        if self.chkVisualizar.isChecked():
+            headless = False
+        else:
+            headless = True
 
         error_dialog = QtWidgets.QMessageBox()
         error_dialog.setIcon(QtWidgets.QMessageBox.Warning)
@@ -86,7 +95,7 @@ class Ui_mainAprova(object):
 
         if len(userNewmonitor) > 0 and len(passNewmonitor) > 0:
 
-            ticketsProcessados = aprova_tickets(userNewmonitor, passNewmonitor, progresso) 
+            ticketsProcessados = aprova_tickets(userNewmonitor, passNewmonitor, progresso, headless) 
             if ticketsProcessados >= 0:           
                 msg_dialog.setText("Foram aprovados "+str(ticketsProcessados)+" tickets!!!")
                 msg_dialog.exec_()

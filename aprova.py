@@ -11,13 +11,14 @@ def check_exists_by_xpath(driver, xpath):
         return False
     return True
 
-def aprova_tickets(usuario, senha, barra):
+def aprova_tickets(usuario, senha, barra, headless):
 
     opcoes = webdriver.ChromeOptions()
-    opcoes.add_argument("--headless")
     opcoes.add_argument("--disable-extensions")
     opcoes.add_argument("--log-level=2")
     opcoes.add_experimental_option("excludeSwitches", ["enable-logging"])
+    if headless: 
+        opcoes.add_argument("--headless")
 
     path='.\driver\chromedriver.exe'
 
