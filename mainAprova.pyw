@@ -1,8 +1,20 @@
 from aprova import aprova_tickets
 from PyQt5 import QtCore, QtGui, QtWidgets
+import os
 
 class Ui_mainAprova(object):
     def setupUi(self, mainAprova):
+
+        path='.\driver\chromedriver.exe'
+        if not os.path.isfile(path):
+            error_dialog = QtWidgets.QMessageBox()
+            error_dialog.setIcon(QtWidgets.QMessageBox.Warning)
+            error_dialog.setWindowTitle("ERRO")
+            error_dialog.setStandardButtons(QtWidgets.QMessageBox.Ok)            
+            error_dialog.setText("ALERTA: Driver do Google Chrome não encontrado!!!")
+            error_dialog.exec_()
+            sys.exit(self)
+
         mainAprova.setObjectName("mainAprova")
         mainAprova.resize(343, 170)
         self.centralWidget = QtWidgets.QWidget(mainAprova)

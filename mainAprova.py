@@ -1,8 +1,20 @@
 from aprova import aprova_tickets
 from PyQt5 import QtCore, QtGui, QtWidgets
+import os
 
 class Ui_mainAprova(object):
     def setupUi(self, mainAprova):
+
+        path='.\driver\chromedriver.exe'
+        if not os.path.isfile(path):
+            error_dialog = QtWidgets.QMessageBox()
+            error_dialog.setIcon(QtWidgets.QMessageBox.Warning)
+            error_dialog.setWindowTitle("ERRO")
+            error_dialog.setStandardButtons(QtWidgets.QMessageBox.Ok)            
+            error_dialog.setText("ALERTA: Driver do Google Chrome não encontrado!!!")
+            error_dialog.exec_()
+            sys.exit(self)
+
         mainAprova.setObjectName("mainAprova")
         mainAprova.resize(343, 170)
         self.centralWidget = QtWidgets.QWidget(mainAprova)
@@ -70,13 +82,17 @@ class Ui_mainAprova(object):
         msg_dialog.setStandardButtons(QtWidgets.QMessageBox.Ok)
 
         progresso = self.progressBar
-
+        progresso.setValue(0)
 
         if len(userNewmonitor) > 0 and len(passNewmonitor) > 0:
 
-            ticketsProcessados = aprova_tickets(userNewmonitor, passNewmonitor, progresso)            
-            msg_dialog.setText("Foram aprovados "+str(ticketsProcessados)+" tickets!!!")
-            msg_dialog.exec_()
+            ticketsProcessados = aprova_tickets(userNewmonitor, passNewmonitor, progresso) 
+            if ticketsProcessados >= 0:           
+                msg_dialog.setText("Foram aprovados "+str(ticketsProcessados)+" tickets!!!")
+                msg_dialog.exec_()
+            else:
+                error_dialog.setText("ALERTA: Usuário ou Senha incorretos!!!")
+                error_dialog.exec_()
 
         else:
             error_dialog.setText("ALERTA: Não pode conter campos vazios!!!")

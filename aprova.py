@@ -2,7 +2,7 @@ import selenium
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from time import sleep
-from selenium.common.exceptions import NoSuchElementException        
+from selenium.common.exceptions import NoSuchElementException
 
 def check_exists_by_xpath(driver, xpath):
     try:
@@ -14,9 +14,16 @@ def check_exists_by_xpath(driver, xpath):
 def aprova_tickets(usuario, senha, barra):
 
     opcoes = webdriver.ChromeOptions()
-    #opcoes.add_argument("--headless")
+    opcoes.add_argument("--headless")
+    opcoes.add_argument("--disable-extensions")
+    opcoes.add_argument("--log-level=2")
+    opcoes.add_experimental_option("excludeSwitches", ["enable-logging"])
 
-    navegador = webdriver.Chrome(options=opcoes)
+    path='.\driver\chromedriver.exe'
+
+    argumentos=['--log-path=.\driver\chromedriver.log']
+
+    navegador = webdriver.Chrome(executable_path=path,options=opcoes,service_args=argumentos)
     navegador.get("http://newmonitor/user/login_old.php#")
 
     sleep(2)
