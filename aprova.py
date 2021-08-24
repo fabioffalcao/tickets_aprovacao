@@ -14,7 +14,7 @@ def check_exists_by_xpath(driver, xpath):
 def aprova_tickets(usuario, senha, barra):
 
     opcoes = webdriver.ChromeOptions()
-    #opcoes.add_argument("--headless")
+    opcoes.add_argument("--headless")
     opcoes.add_argument("--disable-extensions")
     opcoes.add_argument("--log-level=2")
     opcoes.add_experimental_option("excludeSwitches", ["enable-logging"])
