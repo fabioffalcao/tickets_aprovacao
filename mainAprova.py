@@ -16,25 +16,25 @@ class Ui_mainAprova(object):
             sys.exit(self)
 
         mainAprova.setObjectName("mainAprova")
-        mainAprova.resize(343, 170)
+        mainAprova.resize(342, 227)
         self.centralWidget = QtWidgets.QWidget(mainAprova)
         self.centralWidget.setObjectName("centralWidget")
         self.lblUserNewmonitor = QtWidgets.QLabel(self.centralWidget)
-        self.lblUserNewmonitor.setGeometry(QtCore.QRect(40, 60, 71, 16))
+        self.lblUserNewmonitor.setGeometry(QtCore.QRect(20, 80, 71, 16))
         self.lblUserNewmonitor.setObjectName("lblUserNewmonitor")
         self.lblSenhaNewmonitor = QtWidgets.QLabel(self.centralWidget)
-        self.lblSenhaNewmonitor.setGeometry(QtCore.QRect(40, 80, 71, 16))
+        self.lblSenhaNewmonitor.setGeometry(QtCore.QRect(20, 100, 71, 16))
         self.lblSenhaNewmonitor.setObjectName("lblSenhaNewmonitor")
         self.usrNewmonitor = QtWidgets.QLineEdit(self.centralWidget)
-        self.usrNewmonitor.setGeometry(QtCore.QRect(100, 60, 113, 20))
+        self.usrNewmonitor.setGeometry(QtCore.QRect(80, 80, 113, 20))
         self.usrNewmonitor.setObjectName("usrNewmonitor")
         self.passNewmonitor = QtWidgets.QLineEdit(self.centralWidget)
-        self.passNewmonitor.setGeometry(QtCore.QRect(100, 80, 113, 20))
+        self.passNewmonitor.setGeometry(QtCore.QRect(80, 100, 113, 20))
         self.passNewmonitor.setObjectName("passNewmonitor")
         self.passNewmonitor.setEchoMode(QtWidgets.QLineEdit.Password)
         self.passNewmonitor.returnPressed.connect(self.onClickBtnExecutar)
         self.btnExecutar = QtWidgets.QPushButton(self.centralWidget)
-        self.btnExecutar.setGeometry(QtCore.QRect(230, 80, 75, 23))
+        self.btnExecutar.setGeometry(QtCore.QRect(80, 130, 111, 23))
         self.btnExecutar.setObjectName("btnExecutar")
         self.btnExecutar.clicked.connect(self.onClickBtnExecutar)
         self.lblNewmonitor = QtWidgets.QLabel(self.centralWidget)
@@ -42,14 +42,20 @@ class Ui_mainAprova(object):
         self.lblNewmonitor.setObjectName("lblNewmonitor")
         self.progressBar = QtWidgets.QProgressBar(self.centralWidget)
         self.progressBar.setEnabled(True)
-        self.progressBar.setGeometry(QtCore.QRect(10, 110, 321, 23))
+        self.progressBar.setGeometry(QtCore.QRect(10, 170, 321, 23))
         self.progressBar.setProperty("value", 24)
         self.progressBar.setTextVisible(False)
         self.progressBar.setObjectName("progressBar")
         self.progressBar.setValue(0)
         self.chkVisualizar = QtWidgets.QCheckBox(self.centralWidget)
-        self.chkVisualizar.setGeometry(QtCore.QRect(230, 50, 91, 23))
-        self.chkVisualizar.setObjectName("chkVisualizar")       
+        self.chkVisualizar.setGeometry(QtCore.QRect(220, 60, 91, 23))
+        self.chkVisualizar.setObjectName("chkVisualizar")
+        self.chkAcessoExterno = QtWidgets.QCheckBox(self.centralWidget)
+        self.chkAcessoExterno.setGeometry(QtCore.QRect(220, 80, 91, 41))
+        self.chkAcessoExterno.setObjectName("chkAcessoExterno")
+        self.chkHttps = QtWidgets.QCheckBox(self.centralWidget)
+        self.chkHttps.setGeometry(QtCore.QRect(220, 120, 91, 23))
+        self.chkHttps.setObjectName("chkHttps")
         mainAprova.setCentralWidget(self.centralWidget)
         self.mainToolBar = QtWidgets.QToolBar(mainAprova)
         self.mainToolBar.setObjectName("mainToolBar")
@@ -70,15 +76,28 @@ class Ui_mainAprova(object):
         self.lblNewmonitor.setText(_translate("mainAprova", "Digite as informações de\n"
 "conexão com o Newmonitor"))
         self.chkVisualizar.setText(_translate("mainAprova", "Visualizar"))
+        self.chkAcessoExterno.setText(_translate("mainAprova", "Externo"))
+        self.chkHttps.setText(_translate("mainAprova", "HTTPS"))
 
     def onClickBtnExecutar(self):
         userNewmonitor = self.usrNewmonitor.text()
         passNewmonitor = self.passNewmonitor.text()
 
+        parametros = {}
         if self.chkVisualizar.isChecked():
-            headless = False
+            parametros['headless'] = False
         else:
-            headless = True
+            parametros['headless'] = True
+        
+        if self.chkAcessoExterno.isChecked():
+            parametros['externo'] = True
+        else:
+            parametros['externo'] = False
+        
+        if self.chkHttps.isChecked():
+            parametros['https'] = True
+        else:
+            parametros['https'] = False
 
         error_dialog = QtWidgets.QMessageBox()
         error_dialog.setIcon(QtWidgets.QMessageBox.Warning)
@@ -95,7 +114,7 @@ class Ui_mainAprova(object):
 
         if len(userNewmonitor) > 0 and len(passNewmonitor) > 0:
 
-            ticketsProcessados = aprova_tickets(userNewmonitor, passNewmonitor, progresso, headless) 
+            ticketsProcessados = aprova_tickets(userNewmonitor, passNewmonitor, progresso, parametros) 
             if ticketsProcessados >= 0:           
                 msg_dialog.setText("Foram aprovados "+str(ticketsProcessados)+" tickets!!!")
                 msg_dialog.exec_()

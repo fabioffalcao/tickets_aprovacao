@@ -11,30 +11,44 @@ def check_exists_by_xpath(driver, xpath):
         return False
     return True
 
-def aprova_tickets(usuario, senha, barra, headless):
+def aprova_tickets(usuario, senha, barra, parametros):
 
     opcoes = webdriver.ChromeOptions()
     opcoes.add_argument("--disable-extensions")
     opcoes.add_argument("--log-level=2")
     opcoes.add_experimental_option("excludeSwitches", ["enable-logging"])
-    if headless: 
+    if parametros['headless']: 
         opcoes.add_argument("--headless")
 
+    if parametros['externo']:
+        host = 'newmonitor.virtua.com.br'
+    else:
+        host = 'newmonitor'
+
+    if parametros['https']:
+        protocolo = 'https'
+    else:
+        protocolo = 'http'
+    
     path='.\driver\chromedriver.exe'
 
     argumentos=['--log-path=.\driver\chromedriver.log']
 
     navegador = webdriver.Chrome(executable_path=path,options=opcoes,service_args=argumentos)
-    navegador.get("http://newmonitor/user/login_old.php#")
+    prefixo = protocolo+"://"+host
+    #navegador.get("http://newmonitor/user/login_old.php#")
+    navegador.get(prefixo+"/user/login_old.php#")
 
     sleep(2)
     #problema de seguranca do http
-    #navegador.find_element_by_xpath('//*[@id="details-button"]').click()
-    #navegador.find_element_by_xpath('//*[@id="proceed-link"]').click()
+    if parametros['https']:
+        navegador.find_element_by_xpath('//*[@id="details-button"]').click()
+        navegador.find_element_by_xpath('//*[@id="proceed-link"]').click()
 
     #clicando no aviso do newmonitor
     navegador.find_element_by_xpath('//*[@id="comunicado"]/center/strong/a').click()
-
+    sleep(1)
+    
     #tela de login
     wlogin = navegador.find_element_by_xpath('//*[@id="divLogin"]/form/table/tbody/tr[2]/td[2]/input')
     wlogin.clear()
@@ -52,7 +66,8 @@ def aprova_tickets(usuario, senha, barra, headless):
     
 
     #entrando na fila de aprovacoes
-    navegador.get("http://newmonitor/user/aprov/aprov.php")
+    #navegador.get("http://newmonitor/user/aprov/aprov.php")
+    navegador.get(prefixo+"/user/aprov/aprov.php")
     sleep(1)
 
     tabela = navegador.find_elements_by_xpath('//*[@id="divTicket"]/table/tbody/tr/td[1]')
@@ -64,7 +79,7 @@ def aprova_tickets(usuario, senha, barra, headless):
         for numTicket in tabela:
             barra.setValue(barra.value() + undProgresso)
             if (numTicket.text != 'Ticket') and (numTicket.text != 'Nenhum ticket encontrado'):
-                url = 'http://newmonitor/user/gi/gi_view.php?idTicket='+numTicket.text+'&aprov=1'
+                url = prefixo+'/user/gi/gi_view.php?idTicket='+numTicket.text+'&aprov=1'
                 navegador.execute_script("window.open();")
                 navegador.switch_to.window(navegador.window_handles[1])
                 navegador.get(url)
