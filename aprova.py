@@ -41,7 +41,7 @@ def aprova_tickets(usuario, senha, barra, parametros):
 
     sleep(2)
     #problema de seguranca do http
-    if parametros['https']:
+    if parametros['https'] and check_exists_by_xpath(navegador,'//*[@id="details-button"]'):
         navegador.find_element_by_xpath('//*[@id="details-button"]').click()
         navegador.find_element_by_xpath('//*[@id="proceed-link"]').click()
 
